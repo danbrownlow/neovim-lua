@@ -13,6 +13,11 @@ if not lsp_status_ok then
   return
 end
 
+local lsp_status_ok, null_ls = pcall(require, 'null-ls')
+if not lsp_status_ok then
+  return
+end
+
 local cmp_status_ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
 if not cmp_status_ok then
   return
@@ -118,6 +123,12 @@ JavaScript/TypeScript -> tsserver
 local root_dir = function()
   return vim.fn.getcwd()
 end
+
+null_ls.setup({
+    sources = {
+        null_ls.builtins.formatting.prettier
+    },
+})
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches.
