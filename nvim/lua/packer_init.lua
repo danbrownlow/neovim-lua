@@ -105,11 +105,22 @@ return packer.startup(function(use)
     },
   }
 
+  -- Comment
+  use {
+    'numToStr/Comment.nvim',
+    config = function()
+        require('Comment').setup()
+    end
+  }
+
   -- Statusline
   use {
     'feline-nvim/feline.nvim',
     requires = { 'kyazdani42/nvim-web-devicons' },
   }
+
+  -- Surround
+  use 'tpope/vim-surround'
 
   -- git labels
   use {
@@ -138,7 +149,18 @@ return packer.startup(function(use)
     cmd = "Copilot",
     event = "InsertEnter",
     config = function()
-      require("copilot").setup({})
+      require("copilot").setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+        filetypes = {
+          sh = function ()
+            if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), '^%.c') then
+              return false
+            end
+            return true
+          end,
+        },
+      })
     end,
   }
   use {

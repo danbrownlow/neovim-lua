@@ -28,6 +28,11 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
+-- Some clang extra bits
+local clangd_capabilities = capabilities
+clangd_capabilities.textDocument.semanticHighlighting = true
+clangd_capabilities.offsetEncoding = "utf-8"
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -124,6 +129,27 @@ local root_dir = function()
   return vim.fn.getcwd()
 end
 
+lspconfig.clangd.setup{
+    capabilities = clangd_capabilities,
+    on_attach = on_attach,
+    root_dir = root_dir,
+    cmd = {
+    	"clangd",
+    	"--background-index",
+    	"--pch-storage=memory",
+    	"--clang-tidy",
+    	"--suggest-missing-includes",
+    	"--cross-file-rename",
+    	"--completion-style=detailed",
+    },
+    init_options = {
+    	clangdFileStatus = true,
+    	usePlaceholders = true,
+    	completeUnimported = true,
+    	semanticHighlighting = true,
+    }
+}
+
 null_ls.setup({
     sources = {
         null_ls.builtins.formatting.prettier
@@ -133,7 +159,7 @@ null_ls.setup({
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches.
 -- Add your language server below:
-local servers = { 'bashls', 'pyright', 'clangd', 'html', 'cssls', 'tsserver', 'csharp_ls'}
+local servers = { 'bashls', 'pyright', 'html', 'cssls', 'tsserver', 'csharp_ls'}
 
 -- Call setup
 for _, lsp in ipairs(servers) do
