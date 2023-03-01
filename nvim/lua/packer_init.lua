@@ -143,6 +143,8 @@ return packer.startup(function(use)
     config = function() require('guess-indent').setup {} end,
   }
 
+  use { 'tpope/vim-sleuth' }
+
   -- Co-pilot
   use {
     "zbirenbaum/copilot.lua",
